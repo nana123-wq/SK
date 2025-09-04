@@ -1,0 +1,250 @@
+﻿@model SK.Models.User
+
+@{
+    ViewBag.Title = "个人中心";
+    Layout = null; // 禁用布局页
+}
+
+<!-- 统一样式与背景设置 -->
+<style>
+    /* 全局样式 */
+    body {
+        background-image: url('/img/bg.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* 统一卡片样式 */
+    .unified-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .unified-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+        }
+
+    .card-header {
+        padding: 25px 30px;
+        position: relative;
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    }
+
+        .card-header h2 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    /* 个人中心特有样式 (保留原有精华) */
+    .profile-card {
+        background: none;
+    }
+
+    .avatar-wrapper {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        border: 5px solid rgba(255,255,255,0.3);
+        overflow: hidden;
+        position: relative;
+        transition: all 0.3s;
+    }
+
+        .avatar-wrapper:hover {
+            transform: scale(1.05);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .stats-container {
+        display: flex;
+        justify-content: space-around;
+        padding: 20px;
+        background: rgba(0,0,0,0.1);
+        border-top: 1px solid rgba(255,255,255,0.2);
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .stat-item {
+        text-align: center;
+        color: #333;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a2a6c;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    .profile-actions {
+        padding: 25px 30px;
+        background: rgba(240, 240, 240, 0.7);
+        text-align: center;
+    }
+
+    /* 按钮样式统一 */
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-bottom: 0;
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #1a2a6c;
+        border-color: #1a2a6c;
+    }
+
+        .btn-primary:hover {
+            background-color: #15204d;
+            border-color: #15204d;
+        }
+
+    .btn-outline-light {
+        color: #e0b0ff;
+        background-color: transparent;
+        border-color: #e0b0ff;
+    }
+
+        .btn-outline-light:hover {
+            color: #1a2a6c;
+            background-color: #fff;
+        }
+
+    .btn-outline-warning {
+        color: #ffc107;
+        background-color: transparent;
+        border-color: #ffc107;
+    }
+
+        .btn-outline-warning:hover {
+            color: #1a2a6c;
+            background-color: #ffc107;
+        }
+
+    .btn-default {
+        color: #333;
+        background-color: #fff;
+        border-color: #ddd;
+    }
+
+        .btn-default:hover {
+            background-color: #f5f5f5;
+        }
+</style>
+
+<div class="container">
+    <div class="unified-card">
+        <div class="card-header">
+            <h2>个人中心</h2>
+        </div>
+        <div class="card-body">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-wrapper">
+                        <!-- 修改此处：使用ViewBag.Avatar或默认头像 -->
+                        <img src="@(string.IsNullOrEmpty(ViewBag.Avatar) ? "/img/1.jpg" : ViewBag.Avatar)" alt="用户头像">
+                    </div>
+
+                    <h2 class="text-white">@ViewBag.Nickname</h2>
+                    <p class="text-light">@ViewBag.Signature</p>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">剧本收藏</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">游玩记录</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">好友</div>
+                    </div>
+                </div>
+
+                <div class="profile-actions p-3">
+                    <div class="d-grid gap-2">
+                        <a href="@Url.Action("EditProfile", "Me")" class="btn btn-outline-light btn-lg">
+                            <i class="fa fa-edit me-2"></i>编辑资料
+                        </a>
+                        <a href="@Url.Action("ChangePassword", "Me")" class="btn btn-outline-light btn-lg">
+                            <i class="fa fa-lock me-2"></i>修改密码
+                        </a>
+                        <a href="@Url.Action("Login", "Login")" class="btn btn-outline-warning btn-lg">
+                            <i class="fa fa-sign-out me-2"></i>退出登录
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function showTab(tabId) {
+        // 隐藏所有标签内容
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+        // 显示选中的标签内容
+        document.getElementById(tabId).classList.add('active');
+
+        // 更新标签样式
+        document.querySelectorAll('.tab-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        document.querySelector(`.tab-item[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }
+</script>

@@ -1,0 +1,167 @@
+﻿@model IEnumerable<SK.Models.Script>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇妙之夜</title>
+    <link href="~/Content/characters.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/新闻.css" rel="stylesheet" />
+    <link href="~/Content/scripts.css" rel="stylesheet" />
+    <link href="~/Content/dm.css" rel="stylesheet" />
+    <script src="~/Scripts/scripts.js"></script>
+    <style>
+        .section-title {
+            color: #FFD700; /* 金黄色 - 与常见按钮颜色一致 */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* 添加阴影增强可读性 */
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- 背景 -->
+    <div class="main-background"></div>
+
+    <!-- 导航栏 -->
+    <nav>
+        <ul>
+            <li><a href="#script-carousel">热门剧本</a></li>
+            <li><a href="#news">新闻</a></li>
+            <li><a href="#story">主题房间</a></li>
+            <li><a href="#dm-carousel">DM</a></li>
+            <li><a class="login-link" href="@Url.Action("Index", "Me")">我的</a></li>
+        </ul>
+    </nav>
+
+    <!-- 剧本轮播区 -->
+    <section id="script-carousel" class="scroll-section">
+        <h2 class="section-title">热门剧本</h2>
+        <a href="@Url.Action("AllScripts", "Scripts")" class="news-more">
+            查看全部 <i class="fas fa-chevron-right"></i>
+        </a>
+        <div class="carousel-container">
+            <div class="carousel-wrapper">
+                <!-- 剧本卡片将通过JavaScript动态生成 -->
+            </div>
+            <button id="carouselPrev" class="carousel-btn prev-btn">&#10094;</button>
+            <button id="carouselNext" class="carousel-btn next-btn">&#10095;</button>
+        </div>
+    </section>
+
+
+    <!-- 新闻模块 -->
+    <section id="news" class="scroll-section">
+        <h2 class="section-title">最新新闻</h2>
+        <div class="news-main">
+            <div id="container">
+                <img src="img/new1.jpg" class="active" alt="新闻1">
+                <img src="img/new2.jpg" alt="新闻2">
+                <div class="slider-indicators">
+                    <div class="indicator active"></div>
+                    <div class="indicator"></div>
+                </div>
+                <button class="slider-btn prev-btn">&#10094;</button>
+                <button class="slider-btn next-btn">&#10095;</button>
+            </div>
+            <div class="news-content">
+                <ul class="news-nav">
+                    <li class="nav-item nav-item-active">公告</li>
+                </ul>
+                <ul class="news-list">
+                    <li class="list-item">
+                        <span class="item-title ellipsis">欢迎来到剧本杀的冒险世界！</span>
+                        <span class="item-data">2025-05-30</span>
+                    </li>
+                    <!-- 新增剧本杀新闻 1 -->
+                    <li class="list-item">
+                        <span class="item-title ellipsis">沉浸式古风剧本杀《长安谜局》上线</span>
+                        <span class="item-data">2025-06-12</span>
+                    </li>
+                    <!-- 新增剧本杀新闻 2 -->
+                    <li class="list-item">
+                        <span class="item-title ellipsis">剧本杀新机制本《星际叛乱》玩法曝光</span>
+                        <span class="item-data">2025-06-10</span>
+                    </li>
+                    <!-- 新增剧本杀新闻 3 -->
+                    <li class="list-item">
+                        <span class="item-title ellipsis">线下剧本杀店举办“推理大师赛”活动</span>
+                        <span class="item-data">2025-06-08</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 故事介绍 -->
+    <section class="scroll-section" id="story">
+        <h2 class="section-title">主题房间</h2>
+        <div class="container">
+            <div class="card-column column-0">
+                <div class="card card-color-0">
+                    <div class="border"></div>
+                    <img src="~/img/room1.jpg" />
+                    <h1>欧式演绎房</h1>
+                </div>
+                <div class="card card-color-2">
+                    <div class="border"></div>
+                    <img src="~/img/room2.jpg" />
+                    <h1>新中式房</h1>
+                </div>
+            </div>
+            <div class="card-column column-1">
+                <div class="card card-color-1">
+                    <div class="border"></div>
+                    <img src="~/img/room3.jpg" />
+                    <h1>民国演绎房</h1>
+                </div>
+                <div class="card card-color-3">
+                    <div class="border"></div>
+                    <img src="~/img/room4.jpg" />
+                    <h1>田园主题房</h1>
+                </div>
+            </div>
+        </div>
+
+        <div id="cover" class="cover"></div>
+
+        <div id="open-content" class="open-content">
+            <a href="#" id="close-content" class="close-content">
+                <span class="x-1"></span>
+                <span class="x-2"></span>
+            </a>
+            <img id="open-content-image" src="" />
+            <div class="text" id="open-content-text"></div>
+        </div>
+    </section>
+
+    <!-- DM模块 -->
+    <section id="dm-carousel" class="scroll-section">
+        <h2 class="section-title">人气DM</h2>
+        <div class="carousel-container">
+            <div class="carousel-wrapper">
+                <!-- DM卡片将通过JavaScript动态生成 -->
+            </div>
+            <button id="dmCarouselPrev" class="carousel-btn prev-btn">&#10094;</button>
+            <button id="dmCarouselNext" class="carousel-btn next-btn">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- 引入 DM 模块逻辑 -->
+    <script src="~/Scripts/dm.js"></script>
+
+
+
+    <!-- 启用模块化 JS 引入 -->
+    <script type="module" src="main.js"></script>
+    <script src="~/Scripts/story.js"></script>
+    <script src="~/Scripts/news.js"></script>
+    <script src="~/Scripts/characters.js"></script>
+</body>
+</html>

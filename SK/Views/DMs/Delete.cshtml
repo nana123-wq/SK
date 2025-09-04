@@ -1,0 +1,276 @@
+﻿@model SK.Models.DM
+
+@{
+    ViewBag.Title = "删除DM信息";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 奇妙之夜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url('../img/OCTOPATH_TRAVELER_ARTWORK_1_1920x1080.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Raleway', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(8, 8, 8, 0.5);
+                z-index: -1;
+            }
+
+        .card {
+            background-color: rgba(18, 18, 18, 0.5);
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            color: #f8f9fa;
+        }
+
+        .card-header {
+            background-color: rgba(30, 30, 30, 0.95);
+            border-bottom: 2px solid #FFD700;
+            padding: 20px 30px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-header i {
+                margin-right: 10px;
+                color: #FFD700;
+            }
+
+        .form-control, .form-select {
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid #FFD700;
+            color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #FFA500;
+                box-shadow: 0 0 0 0.25rem rgba(255, 165, 0, 0.25);
+            }
+
+        .star-rating {
+            font-size: 1.8rem;
+            color: #FFD700;
+        }
+
+        .img-preview-container {
+            border: 2px dashed #FFD700;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(30, 30, 30, 0.8);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-preview {
+            max-height: 200px;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #808080;
+            margin-bottom: 10px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        .btn-primary {
+            background-color: #FFD700;
+            border-color: #FFD700;
+            color: #555;
+            font-weight: 500;
+        }
+
+            .btn-primary:hover {
+                background-color: #FFA500;
+                border-color: #FFA500;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(255, 165, 0, 0.3);
+            }
+
+        .btn-outline-secondary {
+            color: #FFD700;
+            border-color: #FFD700;
+        }
+
+            .btn-outline-secondary:hover {
+                background-color: #FFD700;
+                color: #555;
+            }
+
+        .text-danger {
+            color: #e74c3c !important;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .alert-warning {
+            background-color: rgba(255, 185, 0, 0.1);
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+
+            .alert-warning i {
+                color: #FFD700;
+            }
+
+        .text-gold {
+            color: #FFD700;
+        }
+
+        .text-gray-200 {
+            color: #f8f9fa;
+        }
+
+        .text-gray-300 {
+            color: #e9ecef;
+        }
+
+        .text-gray-400 {
+            color: #dee2e6;
+        }
+
+        .bg-dark-transparent {
+            background-color: rgba(18, 18, 18, 0.5);
+        }
+
+        .border-gold {
+            border-color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-center h-100">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card h-auto">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-trash-alt me-2"></i>确认删除DM信息</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- 警告提示区域 -->
+                        <div class="alert alert-warning text-center mb-5">
+                            <i class="fas fa-exclamation-circle text-3xl mb-3"></i>
+                            <h3>你确定要删除这个DM信息吗？</h3>
+                            <p class="mt-2">此操作不可撤销，DM的所有数据将被永久删除。</p>
+                        </div>
+
+                        <!-- DM信息展示 -->
+                        <div class="bg-dark-transparent p-5 rounded-lg mb-5">
+                            <h4 class="text-gold mb-4 border-b border-gold pb-2">DM详情</h4>
+
+                            <div class="row g-4">
+                                <!-- 左侧信息展示 -->
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="form-label text-gold">DM编号</label>
+                                        <p class="form-control-plaintext">@Model.DId</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label text-gold">DM姓名</label>
+                                        <p class="form-control-plaintext">@Model.Name</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label text-gold">个人简介</label>
+                                        <div class="form-control-plaintext">@Model.Description</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label text-gold">人气值</label>
+                                        <p class="form-control-plaintext">@Model.Popularity</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label text-gold">主持技能</label>
+                                        <div class="form-control-plaintext">@Model.Skill</div>
+                                    </div>
+                                </div>
+
+                                <!-- 右侧头像展示 -->
+                                <div class="col-md-5">
+                                    <div class="text-center">
+                                        @if (!string.IsNullOrEmpty(Model.Image))
+                                        {
+                                            <img src="@Url.Content(Model.Image)"
+                                                 alt="DM头像"
+                                                 class="img-fluid rounded"
+                                                 style="max-height: 180px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="img-preview-container">
+                                                <i class="fas fa-user-circle upload-icon"></i>
+                                                <p class="text-muted">暂无头像图片</p>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 操作按钮 -->
+                        <div class="d-flex justify-center gap-4">
+                            @using (Html.BeginForm("Delete", "DMs", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.DId)
+                                <button type="submit" class="btn btn-danger px-6 py-2">
+                                    <i class="fas fa-trash-alt me-2"></i>确认删除
+                                </button>
+                            }
+
+                            <a href="@Url.Action("Index", "DMs")" class="btn btn-outline-secondary px-6 py-2">
+                                <i class="fas fa-arrow-left me-2"></i>返回列表
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

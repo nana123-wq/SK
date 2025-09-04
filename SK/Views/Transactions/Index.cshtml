@@ -1,0 +1,130 @@
+﻿@model IEnumerable<SK.Models.Transaction>
+
+@{
+    ViewBag.Title = "交易记录列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // 计算总金额 - 添加类型转换
+    decimal totalAmount = Model.Sum(t =>
+    {
+        decimal amount;
+        decimal.TryParse(t.Amount, out amount);
+        return amount * (t.Number ?? 0);
+    });
+
+    // 热销剧本排行数据
+    var hotScripts = Model
+        .GroupBy(t => t.ScriptTitle)
+        .Select(g => new
+        {
+            ScriptTitle = g.Key,
+            TotalSales = g.Sum(t =>
+            {
+                decimal amount;
+                decimal.TryParse(t.Amount, out amount);
+                return amount * (t.Number ?? 0);
+            }),
+            TotalCount = g.Sum(t => t.Number ?? 0)
+        })
+        .OrderByDescending(x => x.TotalSales)
+        .Take(5) // 取前5名
+        .ToList();
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- 热销剧本排行 -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">热销剧本排行</h5>
+                </div>
+                <div class="card-body">
+                    @if (!hotScripts.Any())
+                    {
+                        <div class="alert alert-info">暂无销售数据</div>
+                    }
+                    else
+                    {
+                        <ol class="list-group list-group-numbered">
+                            @foreach (var script in hotScripts)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">@script.ScriptTitle</div>
+                                        销量: @script.TotalCount 本
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">¥@script.TotalSales.ToString("0.00")</span>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- 交易记录列表 -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">交易记录列表</h2>
+  
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-info">暂无交易记录</div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>用户ID</th>
+                                        <th>剧本名称</th>
+                                        <th>单价</th>
+                                        <th>人数</th>
+                                        <th>总金额</th>
+                                        <th>交易时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        decimal amount;
+                                        decimal.TryParse(item.Amount, out amount);
+                                        var itemTotal = amount * (item.Number ?? 0);
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ScriptTitle)</td>
+                                            <td class="text-end">¥@Html.DisplayFor(modelItem => item.Amount)</td>
+                                            <td class="text-center">@Html.DisplayFor(modelItem => item.Number)</td>
+                                            <td class="text-end">¥@itemTotal.ToString("0.00")</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TransactionTime)</td>
+                                            <td class="text-nowrap">
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    @Html.ActionLink("编辑", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })
+                                               
+                                                    @Html.ActionLink("删除", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-active">
+                                        <td colspan="4" class="text-end fw-bold">总计：</td>
+                                        <td class="text-end fw-bold">¥@totalAmount.ToString("0.00")</td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

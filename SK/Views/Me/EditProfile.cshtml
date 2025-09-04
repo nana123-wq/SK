@@ -1,0 +1,194 @@
+﻿@model SK.Models.EditProfileViewModel
+
+@{
+    ViewBag.Title = "编辑个人资料";
+    Layout = null;
+    string defaultAvatar = "/img/1.jpg";
+}
+
+<style>
+    body {
+        background-image: url('/img/bg.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .edit-profile-form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .edit-profile-form h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 80px;
+            resize: none;
+        }
+
+    .avatar-preview {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+        .avatar-preview img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+
+    .btn-upload {
+        display: inline-block;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+        .btn-upload:hover {
+            background-color: #e0e0e0;
+        }
+
+    .btn-save {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: white; /* 白色文字 */
+        background-color: #FFB84D; /* 浅黄色背景 */
+        border-color: #FFB84D; /* 浅黄色边框 */
+        font-size: 19px; /* 字体大小 */
+        font-weight: 600; /* 字体粗细 */
+    }
+
+        .btn-save:hover {
+            background-color: #f59e0b; /* 悬停时深黄色 */
+            border-color: #f59e0b; /* 悬停时边框颜色 */
+        }
+
+    .error-message {
+        color: red;
+        margin-top: 5px;
+    }
+
+    #signatureCount {
+        font-size: 12px;
+        color: #666;
+        text-align: right;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="edit-profile-form">
+    <h2>编辑个人资料</h2>
+
+    @using (Html.BeginForm("EditProfile", "Me", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Nickname)
+            @Html.EditorFor(m => m.Nickname, new
+            {
+                htmlAttributes = new
+                {
+                    @class = "form-control",
+                    placeholder = "默认使用账号: @ViewBag.Account"
+                }
+            })
+            @Html.ValidationMessageFor(m => m.Nickname, "", new { @class = "error-message" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Signature)
+            @Html.TextAreaFor(m => m.Signature, new { @class = "form-control", @maxlength = 30 })
+            @Html.ValidationMessageFor(m => m.Signature, "", new { @class = "error-message" })
+            <div id="signatureCount">0/30</div>
+        </div>
+
+        <div class="form-group">
+            <label>头像</label>
+            <div class="avatar-preview">
+                <img src="@(string.IsNullOrEmpty(ViewBag.Avatar) ? defaultAvatar : ViewBag.Avatar)"
+                     alt="当前头像" id="avatarPreview">
+            </div>
+            <input type="file" id="avatarFile" name="avatarFile" style="display: none;">
+            <label for="avatarFile" class="btn-upload">
+                <i class="fa fa-upload"></i> 选择新头像
+            </label>
+        </div>
+
+        <button type="submit" class="btn-save">保存修改</button>
+    }
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="@Url.Action("Index", "Me")">取消</a>
+    </div>
+</div>
+
+<script>
+    // 实时显示签名长度
+    document.getElementById('Signature').addEventListener('input', function () {
+        const count = this.value.length;
+        document.getElementById('signatureCount').textContent = `${count}/30`;
+
+        if (count > 30) {
+            document.getElementById('signatureCount').style.color = 'red';
+        } else {
+            document.getElementById('signatureCount').style.color = '#666';
+        }
+    });
+
+    // 处理头像预览（选择文件后立即显示新头像）
+    document.getElementById('avatarFile').addEventListener('change', function (e) {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('avatarPreview').src = e.target.result;
+            }
+
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+</script>

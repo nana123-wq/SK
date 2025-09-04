@@ -1,0 +1,137 @@
+﻿@model SK.Models.Transaction
+
+@{
+    ViewBag.Title = "创建交易记录";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">创建交易记录</h2>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                <div class="row mb-3">
+                    @Html.LabelFor(model => model.Id, "记录ID", new { @class = "col-sm-2 col-form-label" })
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" value="@ViewBag.NextId" readonly />
+                        @Html.HiddenFor(model => model.Id, new { Value = ViewBag.NextId })
+                    </div>
+                </div>             
+
+                <div class="row mb-3">
+                    @Html.LabelFor(model => model.ScriptTitle, "剧本标题", new { @class = "col-sm-2 col-form-label" })
+                    <div class="col-sm-10">
+                        @Html.EditorFor(model => model.ScriptTitle, new
+                        {
+                            htmlAttributes = new
+                            {
+                                @class = "form-control",
+                                placeholder = "请输入剧本标题",
+                                required = "required"
+                            }
+                        })
+                        @Html.ValidationMessageFor(model => model.ScriptTitle, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    @Html.LabelFor(model => model.Amount, "交易金额", new { @class = "col-sm-2 col-form-label" })
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <span class="input-group-text">¥</span>
+                            @Html.EditorFor(model => model.Amount, new
+                            {
+                                htmlAttributes = new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "0.00",
+                                    required = "required",
+                                    min = "0",
+                                    step = "0.01"
+                                }
+                            })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    @Html.LabelFor(model => model.Number, "购买数量", new { @class = "col-sm-2 col-form-label" })
+                    <div class="col-sm-10">
+                        @Html.EditorFor(model => model.Number, new
+                        {
+                            htmlAttributes = new
+                            {
+                                @class = "form-control",
+                                min = "1",
+                                value = "1",
+                                required = "required"
+                            }
+                        })
+                        @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    @Html.LabelFor(model => model.TransactionTime, "交易时间", new { @class = "col-sm-2 col-form-label" })
+                    <div class="col-sm-10">
+                        @Html.EditorFor(model => model.TransactionTime, new
+                        {
+                            htmlAttributes = new
+                            {
+                                @class = "form-control",
+                                type = "datetime-local",
+                                value = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
+                                required = "required"
+                            }
+                        })
+                        @Html.ValidationMessageFor(model => model.TransactionTime, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-10 offset-sm-2">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-save"></i> 创建记录
+                        </button>
+                        @Html.ActionLink("返回列表", "Index", null, new { @class = "btn btn-secondary" })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        // 客户端验证增强
+        $(document).ready(function () {
+            $("form").submit(function () {
+                // 确保金额是正数
+                var amount = parseFloat($("#Amount").val());
+                if (amount <= 0) {
+                    alert("交易金额必须大于0");
+                    return false;
+                }
+
+                // 确保数量是正整数
+                var number = parseInt($("#Number").val());
+                if (number < 1) {
+                    alert("购买数量必须大于0");
+                    return false;
+                }
+
+                return true;
+            });
+        });
+    </script>
+}

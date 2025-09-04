@@ -1,0 +1,327 @@
+﻿@model SK.Models.DM
+
+@{
+    ViewBag.Title = "添加DM";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 奇妙之夜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url('../img/OCTOPATH_TRAVELER_ARTWORK_1_1920x1080.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Raleway', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(8, 8, 8, 0.5);
+            z-index: -1;
+        }
+
+        .card {
+            background-color: rgba(18, 18, 18, 0.5);
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 1200px;
+            color: #f8f9fa;
+        }
+
+        .card-header {
+            background-color: rgba(30, 30, 30, 0.95);
+            border-bottom: 2px solid #FFD700;
+            padding: 20px 30px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-header i {
+                margin-right: 10px;
+                color: #FFD700;
+            }
+
+        .form-control, .form-select {
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid #FFD700;
+            color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #FFA500;
+                box-shadow: 0 0 0 0.25rem rgba(255, 165, 0, 0.25);
+            }
+
+        .star-rating {
+            font-size: 1.8rem;
+            color: #FFD700;
+            cursor: pointer;
+        }
+
+        .img-preview-container {
+            border: 2px dashed #FFD700;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(30, 30, 30, 0.8);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-preview {
+            max-height: 200px;
+            max-width: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #808080;
+            margin-bottom: 10px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        .btn-primary {
+            background-color: #FFD700;
+            border-color: #FFD700;
+            color: #555;
+            font-weight: 500;
+        }
+
+            .btn-primary:hover {
+                background-color: #FFA500;
+                border-color: #FFA500;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(255, 165, 0, 0.3);
+            }
+
+        .btn-outline-secondary {
+            color: #FFD700;
+            border-color: #FFD700;
+        }
+
+            .btn-outline-secondary:hover {
+                background-color: #FFD700;
+                color: #555;
+            }
+
+        .text-danger {
+            color: #e74c3c !important;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-center h-100">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card h-auto">
+                    <div class="card-header">
+                                                <h4 class="mb-0"><i class="fas fa-user-tie me-2"></i>添加DM</h4>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Create", "DMs", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" id="imgPath" name="imgPath" />
+
+                            <div class="row">
+                                <div class="col-md-8 mb-4">
+                                    <div class="form-group">
+                                        <label for="Name" class="form-label required-field">DM姓名</label>
+                                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "输入DM姓名", required = "required" })
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group mb-4">
+                                        <label for="Popularity" class="form-label required-field">人气值</label>
+                                        <div class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                <span class="star far fa-star" data-value="@i" onclick="setRating(@i)"></span>
+                                            }
+                                        </div>
+                                        @Html.HiddenFor(model => model.Popularity, new { id = "StarLevel", required = "required" })
+                                        @Html.ValidationMessageFor(model => model.Popularity, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group mb-4">
+                                        <label for="Description" class="form-label">个人描述</label>
+                                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 3, placeholder = "输入DM个人描述" })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group mb-4">
+                                        <label for="Skill" class="form-label">专业技能</label>
+                                        @Html.TextAreaFor(model => model.Skill, new { @class = "form-control", rows = 3, placeholder = "输入DM专业技能" })
+                                        @Html.ValidationMessageFor(model => model.Skill, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 mb-4">
+                                    <div class="form-group">
+                                        <label class="form-label">封面图片</label>
+                                        <div class="img-preview-container" id="imageUploadArea">
+                                            <div id="uploadContent">
+                                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                                <p class="text-muted">点击或拖拽图片到此处</p>
+                                                <input type="file" id="imageFile" name="imageFile" accept="image/*" class="d-none" />
+                                                <button type="button" class="btn btn-outline-primary mt-2" onclick="document.getElementById('imageFile').click()">
+                                                    <i class="fas fa-folder-open me-2"></i>选择图片
+                                                </button>
+                                            </div>
+                                            <img id="previewImage" class="img-preview" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="@Url.Action("Index", "DMs")" class="btn btn-outline-secondary me-md-2">
+                                    <i class="fas fa-arrow-left me-2"></i>返回列表
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>保存添加
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 设置评分
+        function setRating(rating) {
+            $('#StarLevel').val(rating);
+            $('.star').each(function () {
+                const starValue = parseInt($(this).data('value'));
+                if (starValue <= rating) {
+                    $(this).removeClass('far').addClass('fas');
+                } else {
+                    $(this).removeClass('fas').addClass('far');
+                }
+            });
+        }
+
+        // 图片上传和预览
+        document.getElementById('imageFile').addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const preview = document.getElementById('previewImage');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('uploadContent').style.display = 'none';
+
+                    // 上传图片
+                    uploadImage(file);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 拖放功能
+        const uploadArea = document.getElementById('imageUploadArea');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#FFA500';
+            uploadArea.style.backgroundColor = 'rgba(30, 30, 30, 0.9)';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#FFD700';
+            uploadArea.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#FFD700';
+            uploadArea.style.backgroundColor = 'rgba(30, 30, 30, 0.8)';
+
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.match('image.*')) {
+                    document.getElementById('imageFile').files = e.dataTransfer.files;
+                    const event = new Event('change');
+                    document.getElementById('imageFile').dispatchEvent(event);
+                }
+            }
+        });
+
+        // 上传图片函数
+        function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                url: '@Url.Action("UploadImage", "DMs")',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#imgPath').val(response.url);
+                    } else {
+                        alert('上传失败: ' + response.message);
+                        resetImageUpload();
+                    }
+                },
+                error: function() {
+                    alert('上传过程中发生错误');
+                    resetImageUpload();
+                }
+            });
+        }
+
+        // 重置图片上传区域
+        function resetImageUpload() {
+            document.getElementById('imageFile').value = '';
+            document.getElementById('previewImage').style.display = 'none';
+            document.getElementById('uploadContent').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

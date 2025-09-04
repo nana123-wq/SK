@@ -1,0 +1,175 @@
+﻿@model SK.Models.New
+
+@{
+    ViewBag.Title = "发布新闻";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 奇妙之夜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url('../img/OCTOPATH_TRAVELER_ARTWORK_1_1920x1080.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Raleway', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(8, 8, 8, 0.5);
+                z-index: -1;
+            }
+
+        .card {
+            background-color: rgba(18, 18, 18, 0.5);
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            color: #f8f9fa;
+        }
+
+        .card-header {
+            background-color: rgba(30, 30, 30, 0.95);
+            border-bottom: 2px solid #FFD700;
+            padding: 20px 30px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-header i {
+                margin-right: 10px;
+                color: #FFD700;
+            }
+
+        .form-control, .form-select {
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid #FFD700;
+            color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #FFA500;
+                box-shadow: 0 0 0 0.25rem rgba(255, 165, 0, 0.25);
+            }
+
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        .btn-primary {
+            background-color: #FFD700;
+            border-color: #FFD700;
+            color: #555;
+            font-weight: 500;
+        }
+
+            .btn-primary:hover {
+                background-color: #FFA500;
+                border-color: #FFA500;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(255, 165, 0, 0.3);
+            }
+
+        .btn-outline-secondary {
+            color: #FFD700;
+            border-color: #FFD700;
+        }
+
+            .btn-outline-secondary:hover {
+                background-color: #FFD700;
+                color: #555;
+            }
+
+        .text-danger {
+            color: #e74c3c !important;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-center h-100">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="card h-auto">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-newspaper me-2"></i>发布新闻</h4>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Create", "News", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="row justify-content-center">
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label for="Title" class="form-label required-field">新闻标题</label>
+                                        @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "输入新闻标题", required = "required" })
+                                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Content" class="form-label required-field">新闻内容</label>
+                                        @Html.TextAreaFor(model => model.Content, new { @class = "form-control", rows = 10, placeholder = "输入新闻详细内容", required = "required" })
+                                        @Html.ValidationMessageFor(model => model.Content, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-container">
+                                <a href="@Url.Action("Index", "News")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>返回列表
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>发布新闻
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

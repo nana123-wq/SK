@@ -1,0 +1,280 @@
+﻿@model SK.Models.DM
+
+@{
+    ViewBag.Title = "编辑DM信息";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 奇妙之夜</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #121212;
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+        }
+
+        .card-header {
+            background-color: #1e1e1e;
+            border-bottom: 1px solid #d4af37;
+            padding: 15px 20px;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .form-control, .custom-select {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+            .form-control:focus, .custom-select:focus {
+                border-color: #d4af37;
+                box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+            }
+
+        .star-rating {
+            font-size: 1.8rem;
+            color: #d4af37;
+            cursor: pointer;
+        }
+
+        .star {
+            transition: color 0.3s ease;
+        }
+
+        .img-preview {
+            max-height: 250px;
+            object-fit: contain;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+
+        .no-image {
+            height: 200px;
+            background-color: #1e1e1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed #333;
+            border-radius: 5px;
+            color: #666;
+        }
+
+        .btn-primary {
+            background-color: #d4af37;
+            border-color: #d4af37;
+            color: #000;
+        }
+
+            .btn-primary:hover {
+                background-color: #b8860b;
+                border-color: #b8860b;
+            }
+
+        .btn-outline-secondary {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+            .btn-outline-secondary:hover {
+                background-color: #d4af37;
+                color: #000;
+            }
+
+        .text-danger {
+            color: #ff6b6b !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">编辑DM信息</h4>
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("Edit", "DMs", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.DId)
+                    <input type="hidden" id="ImagePath" name="ImagePath" value="@Model.Image" />
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-3">
+                                <label for="Name" class="form-label">DM姓名</label>
+                                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", placeholder = "输入DM姓名" })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="Popularity" class="form-label">人气值</label>
+                                <div class="star-rating">
+                                    @{
+                                        int starCount = 0;
+                                        if (!string.IsNullOrEmpty(Model.Popularity))
+                                        {
+                                            starCount = Model.Popularity.Count(c => c == '★');
+                                        }
+                                    }
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <span class="star @(i <= starCount ? "fas fa-star" : "far fa-star")"
+                                              data-value="@i"
+                                              onclick="setRating(@i)"></span>
+                                    }
+                                </div>
+                                @Html.HiddenFor(model => model.Popularity, new { id = "Popularity" })
+                                @Html.ValidationMessageFor(model => model.Popularity, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="Description" class="form-label">个人描述</label>
+                                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = 4, placeholder = "输入DM个人描述" })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label for="Skill" class="form-label">专业技能</label>
+                                @Html.TextAreaFor(model => model.Skill, new { @class = "form-control", rows = 4, placeholder = "输入DM专业技能" })
+                                @Html.ValidationMessageFor(model => model.Skill, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header bg-dark">封面图片</div>
+                                <div class="card-body">
+                                    <div class="mb-3 text-center">
+                                        @if (!string.IsNullOrEmpty(Model.Image))
+                                        {
+                                            <img src="@Url.Content(Model.Image)" class="img-preview mb-2" id="currentImage">
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox" id="deleteImage" name="deleteImage" value="true">
+                                                <label class="form-check-label text-danger" for="deleteImage">删除当前图片</label>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="no-image mb-2">
+                                                <span class="text-muted"><i class="fas fa-image fa-2x"></i></span>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="imageFile" class="form-label">上传新图片</label>
+                                        <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" onchange="previewImage(this)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>保存修改
+                                </button>
+                                <a href="@Url.Action("Index", "DMs")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>返回列表
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 初始化人气值
+        $(document).ready(function() {
+            if (!string.IsNullOrEmpty('@Model.Popularity')) {
+                const starCount = '@Model.Popularity'.count(c => c === '★');
+                setRating(starCount);
+            }
+        });
+
+        // 设置人气值评分
+        function setRating(rating) {
+            $('#Popularity').val(ratingToStars(rating));
+            $('.star').each(function() {
+                const starValue = parseInt($(this).data('value'));
+                if (starValue <= rating) {
+                    $(this).removeClass('far').addClass('fas');
+                } else {
+                    $(this).removeClass('fas').addClass('far');
+                }
+            });
+        }
+
+        // 数字评分转星级字符串
+        function ratingToStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= rating ? '★' : '☆';
+            }
+            return stars;
+        }
+
+        // 图片预览
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // 上传图片
+                    uploadImage(input.files[0]);
+
+                    // 显示预览
+                    if ($('#currentImage').length) {
+                        $('#currentImage').attr('src', e.target.result);
+                    } else {
+                        $('.no-image').replaceWith(`<img src="${e.target.result}" class="img-preview mb-2" id="currentImage">`);
+                    }
+                    $('#deleteImage').closest('.form-check').show();
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // 上传图片
+        function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                url: '@Url.Action("UploadImage", "DMs")',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.success) {
+                        $('#ImagePath').val(response.url);
+                    } else {
+                        alert('上传失败: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('上传过程中发生错误');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

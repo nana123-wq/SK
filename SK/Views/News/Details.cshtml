@@ -1,0 +1,35 @@
+﻿@model SK.Models.New
+
+@{
+    ViewBag.Title = "新闻详情";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>新闻详情</h2>
+
+<div>
+    <h4>新闻信息</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            标题
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            内容
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id = Model.RId }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>

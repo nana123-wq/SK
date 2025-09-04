@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - 剧本杀管理系统</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+    <!-- 自定义浅灰色主题样式 -->
+    <style>
+        /* 整体背景 - 设置背景图 */
+        body {
+            background-image: url('../img/OCTOPATH_TRAVELER_ARTWORK_1_1920x1080.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333333;
+        }
+
+            /* 背景半透明遮罩层 */
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(128, 128, 128, 0.5); /* 浅灰色半透明遮罩，透明度0.5 */
+                z-index: -1;
+            }
+
+        /* 内容容器 - 降低透明度 */
+        .content-container {
+            background-color: rgba(192, 192, 192, 0.85); /* 浅灰色背景，透明度0.85 */
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 黄色导航栏 - 保持原有设计 */
+        .navbar-yellow {
+            background-color: #FFC107 !important;
+            border-color: #FFA000 !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+            .navbar-yellow .navbar-brand,
+            .navbar-yellow .navbar-nav .nav-link {
+                color: #212121 !important;
+            }
+
+                .navbar-yellow .navbar-nav .nav-link:hover,
+                .navbar-yellow .navbar-nav .nav-link:focus {
+                    color: #FFFFFF !important;
+                    background-color: #FFA000 !important;
+                }
+
+        /* 卡片组件样式 */
+        .card {
+            background-color: rgba(248, 248, 248, 0.9); /* 浅灰色卡片，透明度0.9 */
+            border-color: #EEEEEE;
+            color: #333333;
+        }
+
+        .card-header {
+            background-color: #FFC107 !important;
+            color: #212121 !important;
+        }
+
+        /* 按钮样式 */
+        .btn-yellow {
+            background-color: #FFC107 !important;
+            border-color: #FFA000 !important;
+            color: #212121 !important;
+        }
+
+            .btn-yellow:hover,
+            .btn-yellow:focus {
+                background-color: #FFA000 !important;
+                color: #FFFFFF !important;
+            }
+
+        .btn-gray {
+            background-color: #EEEEEE !important;
+            border-color: #DDDDDD !important;
+            color: #555555 !important;
+        }
+
+            .btn-gray:hover,
+            .btn-gray:focus {
+                background-color: #DDDDDD !important;
+                color: #333333 !important;
+            }
+
+        /* 页脚样式 */
+        .footer {
+            background-color: #212121 !important;
+            color: #BDBDBD !important;
+        }
+
+        /* 提示框样式 */
+        .custom-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- 顶部导航栏 - 黄色系 -->
+        <nav class="navbar navbar-expand-lg navbar-yellow">
+            <a class="navbar-brand font-weight-bold" href="#">
+                <i class="fa fa-gamepad mr-2"></i>剧本杀管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Users")">
+                            <i class="fa fa-users mr-1"></i> 用户管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Scripts")">
+                            <i class="fa fa-book mr-1"></i> 剧本管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "DMs")">
+                            <i class="fa fa-user-circle mr-1"></i> DM管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "News")">
+                            <i class="fa fa-newspaper-o mr-1"></i> 新闻管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Orders")">
+                            <i class="fa fa-newspaper-o mr-1"></i> 订单管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Transactions")">
+                            <i class="fa fa-newspaper-o mr-1"></i> 流水统计
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);" onclick="logout()">
+                            <i class="fa fa-sign-out mr-1"></i> 退出登录
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- 内容容器 - 白色背景突出内容 -->
+        <div class="content-container col-md-10 offset-md-1 mt-4 mb-5 p-4">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- 底部版权信息 -->
+    <footer class="footer py-3">
+        <div class="container text-center">
+            <span class="text-muted">
+                <i class="fa fa-copyright mr-1"></i> @DateTime.Now.Year - 剧本杀管理系统 |
+                <a href="#" class="text-muted">后台管理</a> |
+                <a href="#" class="text-muted">帮助中心</a>
+            </span>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <!-- 登录/退出相关脚本 -->
+<script>
+        // 退出登录函数
+        function logout() {
+    // 显示加载中提示
+    showToast("正在退出登录...", "primary");
+
+    // 使用AJAX调用退出登录API（假设后端有专门的Logout方法）
+    $.ajax({
+        url: "@Url.Action("Logout", "Login")", // 改为调用Logout方法
+        type: "POST",
+        data: { __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+        success: function(response) {
+            // 清除客户端身份验证信息（需确保clearAuthData函数存在）
+            clearAuthData();
+
+            // 显示成功提示并跳转
+            showToast("退出登录成功", "success");
+            setTimeout(function() {
+                window.location.href = "@Url.Action("Login", "Login")";
+            }, 1000); // 1秒后跳转
+        },
+        error: function(xhr, status, error) {
+            //console.error("退出登录成功:", error);
+            //showToast("退出登录成功");
+
+            // 即使失败也清除客户端认证数据（避免安全隐患）
+            clearAuthData();
+
+            // 提供备用跳转（如首页）
+            setTimeout(function() {
+                window.location.href = "@Url.Action("Login", "Login")";
+            }, 2000);
+        }
+    });
+}
+        // 清除身份验证数据
+        function clearAuthData() {
+            // 清除所有cookies
+            function clearAllCookies() {
+                var cookies = document.cookie.split(";");
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i];
+                    var eqPos = cookie.indexOf("=");
+                    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+                }
+            }
+
+            // 清除localStorage中的身份验证信息
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_info');
+
+            // 清除会话存储
+            sessionStorage.clear();
+
+            // 页面加载时清除cookies
+            clearAllCookies();
+        }
+
+        // 显示提示框
+        function showToast(message, type) {
+            // 创建提示元素
+            var toast = document.createElement("div");
+            toast.className = "custom-toast";
+
+            // 根据类型设置样式
+            if (type === "primary") {
+                toast.classList.add("bg-primary");
+            } else if (type === "success") {
+                toast.classList.add("bg-success");
+            } else if (type === "danger") {
+                toast.classList.add("bg-danger");
+            }
+
+            // 设置内容
+            toast.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fa fa-${type === "success" ? "check-circle" : type === "danger" ? "exclamation-circle" : "spinner fa-spin"} mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // 添加到页面
+            document.body.appendChild(toast);
+
+            // 显示动画
+            setTimeout(function() {
+                toast.style.opacity = "0.9";
+            }, 10);
+
+            // 自动消失
+            setTimeout(function() {
+                toast.style.opacity = "0";
+                setTimeout(function() {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, type === "primary" ? 1500 : 3000);
+        }
+</script>
+</body>
+</html>

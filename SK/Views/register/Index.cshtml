@@ -1,0 +1,130 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>注册界面</title>
+    <link href="~/Content/登录界面.css" rel="stylesheet" />
+    <style>
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+
+        .validation {
+            display: none;
+            color: red;
+            font-size: 12px;
+        }
+
+        .input.required + .validation.req {
+            display: block;
+        }
+    </style>
+</head>
+<body style="background-image: url('../img/OCTOPATH_TRAVELER_ARTWORK_1_1920x1080.jpg'); background-size: cover; background-position: center; background-attachment: fixed; font-family: 'Raleway', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative;">
+    <!-- 背景透明度叠加层 -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.3); z-index: -1;"></div>
+
+    <div class="form" id="registerForm" style="background-color: rgba(0, 0, 0, 0.8);">
+        <h1>注册</h1>
+
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div style="color: green; margin-bottom: 15px;">
+                @ViewBag.SuccessMessage
+            </div>
+        }
+
+        @if (ViewData.ModelState.ContainsKey("") && ViewData.ModelState[""].Errors.Any())
+        {
+            <div class="error-message">
+                @ViewData.ModelState[""].Errors.First().ErrorMessage
+            </div>
+        }
+
+        @using (Html.BeginForm("Index", "Register", FormMethod.Post, new { id = "registerForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <p class="account">
+                <label for="account">账号</label>
+                <input class="input" required type="text" id="account" name="account" />
+                <span class="validation req">账号不能为空</span>
+            </p>
+            <p class="password">
+                <label for="password">密码</label>
+                <input class="input" required type="password" id="password" name="password" />
+                <span class="validation req">密码不能为空</span>
+            </p>
+            <p class="confirm-password">
+                <label for="confirmPassword">确认密码</label>
+                <input class="input" required type="password" id="confirmPassword" name="confirmPassword" />
+                <span class="validation req">确认密码不能为空</span>
+            </p>
+            <p class="login">
+                <input type="submit" value="注册" id="submitBtn" />
+            </p>
+        }
+
+        <div class="login" style="margin-top: 10px; text-align: center;">
+            <!-- 修改为通过控制器动作跳转 -->
+            <a href="@Url.Action("RedirectToLogin", "Register")" style="color: #87CEEB; text-decoration: none;">前往登录</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            document.querySelectorAll('.input').forEach(input => {
+                input.classList.remove('required');
+            });
+
+            let isValid = true;
+            const account = document.getElementById('account');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+
+            if (!account.value.trim()) {
+                account.classList.add('required');
+                isValid = false;
+            }
+            if (!password.value.trim()) {
+                password.classList.add('required');
+                isValid = false;
+            }
+            if (password.value.trim() !== confirmPassword.value.trim()) {
+                confirmPassword.classList.add('required');
+                isValid = false;
+                alert('两次密码不一致，请重新输入');
+                e.preventDefault();
+                return;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        document.getElementById('account').addEventListener('input', function () {
+            if (this.value.trim()) {
+                this.classList.remove('required');
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function () {
+            if (this.value.trim()) {
+                this.classList.remove('required');
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function () {
+            if (this.value.trim()) {
+                this.classList.remove('required');
+            }
+        });
+    </script>
+</body>
+</html>

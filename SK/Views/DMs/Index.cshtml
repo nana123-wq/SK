@@ -1,0 +1,60 @@
+﻿@model IEnumerable<SK.Models.DM>
+
+@{
+    ViewBag.Title = "DM列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>DM列表</h2>
+    <div>
+        @Html.ActionLink("创建新DM", "Create", null, new { @class = "btn btn-yellow" })
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            DM
+        </th>
+        <th>
+            人气值
+        </th>
+        <th>
+            描述
+        </th>
+        <th>
+            照片
+        </th>
+        <th>操作</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Popularity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Image))
+                {
+                    <img src="@Url.Content(item.Image)" alt="@item.Name" style="max-height: 50px;" />
+                }
+                else
+                {
+                    <span class="text-muted">无图片</span>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("编辑", "Edit", new { id = item.DId }) |
+                @Html.ActionLink("删除", "Delete", new { id = item.DId })
+            </td>
+        </tr>
+    }
+</table>
